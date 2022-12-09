@@ -1,0 +1,68 @@
+﻿@model phoneCATALOG.Models.Phone
+
+<div id="editForm">
+    @using(Html.BeginForm("EditContact", "Home", FormMethod.Post, new { id = "myEditForm"}))
+    {
+
+        @Html.HiddenFor(a => a.Id)
+        <label for="fname">Full Name</label><br>
+        @Html.TextBoxFor(a => a.FullName, new { @id = "fname_edit" })
+
+        <br />
+        <label for="lname">Phone</label><br>
+        @Html.TextBoxFor(a => a.PhoneNumber, new { @id = "phone_edit" })
+
+   
+        <br />
+        <br />
+
+        SelectList myTypes = new SelectList(
+         new List<SelectListItem>
+         {
+             new SelectListItem { Text = "Home", Value = "home" },
+             new SelectListItem { Text = "Company", Value = "company" },
+             new SelectListItem { Text = "Cellphone", Value = "cellphone" }
+         }, "Value", "Text");
+
+    
+
+        <label for="">Choose a tag:</label>
+        @Html.DropDownListFor(a => a.Type, myTypes, "Choose One")
+
+        <br />
+        <br />
+        <div onclick="SaveEditContact('@Model.Id')" class="btn btn-primary">
+            Add Edit
+        </div>
+    }
+
+    <br />
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+</div>
+
+
+<script type="text/javascript">
+  
+    function SaveEditContact(contactId) {
+        
+        var editOrderUrl = $('#myEditForm').attr('action');
+        editOrderUrl += "?contactId=" + contactId;
+        jQuery.ajax({
+            url: editOrderUrl,
+            method: 'POST',
+            data: $('#myEditForm').serialize()
+        }).done(function (response) {
+            // Do something with the response
+            
+            if (response == "ok") {
+                alert("Η επεξεργασία των στοιχείων ολοκληρώθηκε με επιτυχία.");
+            }
+
+        }).fail(function () {
+            // Whoops; show an error.
+        });
+    }
+</script>
+

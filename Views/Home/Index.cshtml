@@ -1,0 +1,126 @@
+﻿@model phoneCATALOG.Models.Phone
+@{ 
+    <style>
+
+    </style>
+}
+
+<div>
+    @using (Html.BeginForm("AddNewContact", "Home", FormMethod.Post, new { id = "myForm" }))
+    {
+        <text><label for="fname"> Full Name </label><br></text>
+        @Html.TextBoxFor(a => a.FullName, new { @id = "fname" })
+
+        <br />
+        <text><label for="lname"> Phone </label><br></text>
+        @Html.TextBoxFor(a => a.PhoneNumber, new { @id = "phone" })
+
+
+        SelectList myTypes = new SelectList(
+        new List<SelectListItem>
+        {
+            new SelectListItem { Text = "Home", Value = "home" },
+            new SelectListItem { Text = "Company", Value = "company" },
+            new SelectListItem { Text = "Cellphone", Value = "cellphone" }
+                                }, "Value", "Text");
+
+        <br /><br />
+        <text><label for=""> Choose a tag:</label></text>
+        @Html.DropDownListFor(a => a.Type, myTypes, "Choose One")
+
+        <br /><br />
+
+        <text>
+            <div onclick="addNewContact()" class="btn btn-primary">
+                Add
+            </div>
+        </text>
+
+        <br /><br /><br />
+
+    }
+</div>
+<div>
+
+    @if (Model.myPhoneList == null)
+    {
+        <p>Add new Contacts</p>
+    }
+    else
+    {
+        <div>
+            <h2>All Contacts</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Phone Number</th>
+                        <th>Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var contact in Model.myPhoneList)
+                    {
+                        <tr>
+                            <td>
+                                @contact.FullName
+                            </td>
+                            <td>
+                                @contact.PhoneNumber
+                            </td>
+                            <td>
+                                @contact.Type
+                            </td>
+                            <td>
+                                <a onclick="deleteContact('@contact.Id')" class="active"> Delete</a>
+                                @Html.ActionLink("Edit", "Edit", new { id = contact.Id })
+                            </td>
+                                       
+                        </tr>
+                    }
+                </tbody>
+                           
+            </table>
+        </div>
+    }
+
+
+</div>
+
+
+
+<script type="text/javascript">
+    function addNewContact() {
+
+        var editOrderUrl = $('#myForm').attr('action');
+        jQuery.ajax({
+            url: editOrderUrl,
+            method: 'POST',
+            data: $('#myForm').serialize()
+        }).done(function (response) {
+            // Do something with the response
+            location.reload();
+        }).fail(function () {
+            // Whoops; show an error.
+        });
+
+    }
+
+    function deleteContact(contactId) {
+
+        var url = "/Home/DeleteContact?contactId=" + contactId;
+
+        $.get(encodeURI(url), function (data) {
+
+            location.reload();
+            //$('#myGenericBody').html(data);
+        });
+
+    }
+
+
+
+
+</script>
+
